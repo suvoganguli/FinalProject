@@ -738,13 +738,12 @@ We have used the following five classifiers for our analysis:
 - Random Forest Classifier
 - Gradient Boosting Classifier
 
-Out initial consideration are the following features:
+Our final list of independent variables are as follows:
 
 1. Education
-2. Race
-3. Occupation
-4. Age Category (age divided into bins of 10)
-5. Education Number (number of years spent in education)
+2. Occupation
+3. Age Category (age divided into bins of 10)
+4. Education Number (number of years spent in education)
 
 We split the dataset into 80% for train and 20% for test. The training data consists of X_train and y_train, and the test data consists of X_test and y_test.
 
