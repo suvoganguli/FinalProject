@@ -729,19 +729,6 @@ print(f"Correlation with Number of Years in Education: {correlation_education_nu
     Correlation with Number of Years in Education: 0.3667
 
 
-
-```python
-mean_hours = np.mean(df['hours-per-week'])
-std_hours = np.std(df['hours-per-week'])
-
-print("Mean hours-per-week = %.2f" % mean_hours)
-print("Standard Deviation hours-per-week = %.2f" % std_hours)
-```
-
-    Mean hours-per-week = 40.93
-    Standard Deviation hours-per-week = 11.98
-
-
 # Machine learning:
 
 We have used the following five classifiers for our analysis:
