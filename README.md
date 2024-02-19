@@ -545,10 +545,6 @@ plt.ylabel('Count')
     
 
 
-## Counts for data columns
-
-To find the counts for the data columns 'income', 'education', 'race', 'occupation' and'education-num' we use the following code.
-
 
 ```python
 grouped_data = {}
@@ -576,50 +572,13 @@ plt.ylabel('Count')
 
 
     
-![png](output_12_1.png)
+![png](output_11_1.png)
     
 
 
+# Value Counts
 
-```python
-# import library
-from scipy.stats import chi2_contingency
-
-def cramers_v(x, y):
-    confusion_matrix = pd.crosstab(x, y)
-    chi2 = chi2_contingency(confusion_matrix)[0]
-    n = confusion_matrix.sum().sum()
-    phi2 = chi2 / n
-    r, k = confusion_matrix.shape
-    phi2corr = max(0, phi2 - ((k-1)*(r-1))/(n-1))
-    rcorr = r - ((r-1)**2)/(n-1)
-    kcorr = k - ((k-1)**2)/(n-1)
-    return np.sqrt(phi2corr / min((kcorr-1), (rcorr-1)))
-
-
-correlation_education = cramers_v(data['education'], data['income'])
-print(f"Correlation with Education: {correlation_education:.4f}")
-
-correlation_race = cramers_v(data['race'], data['income'])
-print(f"Correlation with Race: {correlation_race:.4f}")
-
-correlation_occupation = cramers_v(data['occupation'], data['income'])
-print(f"Correlation with Occupation: {correlation_occupation:.4f}")
-
-correlation_age_category = cramers_v(data['age_category'], data['income'])
-print(f"Correlation with Age Category: {correlation_age_category:.3f}")
-
-correlation_education_num = cramers_v(data['education-num'], data['income'])
-print(f"Correlation with Number of Years in Education: {correlation_education_num:.4f}")
-
-```
-
-    Correlation with Education: 0.3667
-    Correlation with Race: 0.0998
-    Correlation with Occupation: 0.3490
-    Correlation with Age Category: 0.308
-    Correlation with Number of Years in Education: 0.3667
-
+The code below shows the value counts for each of the independent variables we have considered above for the statistical analysis.
 
 
 ```python
@@ -723,6 +682,51 @@ print(age_counts_sorted)
     70-80     357
     80-90      56
     Name: count, dtype: int64
+
+
+# Correlation Analysis
+
+In this section, we perform a correlation analysis between the potential independent variables we considered above and the dependent variable. After the analysis, we have decided that we will excluding the 'race' variable since the correlation is very small.
+
+
+```python
+# import library
+from scipy.stats import chi2_contingency
+
+def cramers_v(x, y):
+    confusion_matrix = pd.crosstab(x, y)
+    chi2 = chi2_contingency(confusion_matrix)[0]
+    n = confusion_matrix.sum().sum()
+    phi2 = chi2 / n
+    r, k = confusion_matrix.shape
+    phi2corr = max(0, phi2 - ((k-1)*(r-1))/(n-1))
+    rcorr = r - ((r-1)**2)/(n-1)
+    kcorr = k - ((k-1)**2)/(n-1)
+    return np.sqrt(phi2corr / min((kcorr-1), (rcorr-1)))
+
+
+correlation_education = cramers_v(data['education'], data['income'])
+print(f"Correlation with Education: {correlation_education:.4f}")
+
+correlation_race = cramers_v(data['race'], data['income'])
+print(f"Correlation with Race: {correlation_race:.4f}")
+
+correlation_occupation = cramers_v(data['occupation'], data['income'])
+print(f"Correlation with Occupation: {correlation_occupation:.4f}")
+
+correlation_age_category = cramers_v(data['age_category'], data['income'])
+print(f"Correlation with Age Category: {correlation_age_category:.3f}")
+
+correlation_education_num = cramers_v(data['education-num'], data['income'])
+print(f"Correlation with Number of Years in Education: {correlation_education_num:.4f}")
+
+```
+
+    Correlation with Education: 0.3667
+    Correlation with Race: 0.0998
+    Correlation with Occupation: 0.3490
+    Correlation with Age Category: 0.308
+    Correlation with Number of Years in Education: 0.3667
 
 
 
