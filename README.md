@@ -273,6 +273,7 @@ We consider the following features which can potentially affect the income level
 2. Race
 3. Occupation
 4. Age Category (age divided into bins of 10)
+5. Number of years in education
 
 The corresponding barplots are shown below.
 
@@ -550,6 +551,78 @@ To find the counts for the data columns 'income','education','race', and 'occupa
 
 
 ```python
+grouped_data = {}
+for category, values in zip(data['income'], data['education-num']):
+    grouped_data.setdefault(category, []).append(values)
+
+# Plotting histogram for each category
+plt.figure()
+for category, values in grouped_data.items():
+    plt.hist(values, bins=5, label=category)
+
+# Add labels and title
+plt.title('Income Category Distribution by Number of Years in Education')
+plt.legend(['<= 50K','> 50K'])
+plt.xlabel('Number of Years in Education')
+plt.ylabel('Count')
+```
+
+
+
+
+    Text(0, 0.5, 'Count')
+
+
+
+
+    
+![png](output_12_1.png)
+    
+
+
+
+```python
+# import library
+from scipy.stats import chi2_contingency
+
+def cramers_v(x, y):
+    confusion_matrix = pd.crosstab(x, y)
+    chi2 = chi2_contingency(confusion_matrix)[0]
+    n = confusion_matrix.sum().sum()
+    phi2 = chi2 / n
+    r, k = confusion_matrix.shape
+    phi2corr = max(0, phi2 - ((k-1)*(r-1))/(n-1))
+    rcorr = r - ((r-1)**2)/(n-1)
+    kcorr = k - ((k-1)**2)/(n-1)
+    return np.sqrt(phi2corr / min((kcorr-1), (rcorr-1)))
+
+
+correlation_education = cramers_v(data['education'], data['income'])
+print(f"Correlation with Education: {correlation_education:.4f}")
+
+correlation_race = cramers_v(data['race'], data['income'])
+print(f"Correlation with Race: {correlation_race:.4f}")
+
+correlation_occupation = cramers_v(data['occupation'], data['income'])
+print(f"Correlation with Occupation: {correlation_occupation:.4f}")
+
+correlation_age_category = cramers_v(data['age_category'], data['income'])
+print(f"Correlation with Age Category: {correlation_age_category:.3f}")
+
+correlation_education_num = cramers_v(data['education-num'], data['income'])
+print(f"Correlation with Number of Years in Education: {correlation_education_num:.4f}")
+
+```
+
+    Correlation with Education: 0.3667
+    Correlation with Race: 0.0998
+    Correlation with Occupation: 0.3490
+    Correlation with Age Category: 0.308
+    Correlation with Number of Years in Education: 0.3667
+
+
+
+```python
 # income counts
 income_counts = data['income'].value_counts()
 # sorting income count by descending order
@@ -680,6 +753,7 @@ Out initial consideration are the following features:
 2. Race
 3. Occupation
 4. Age Category (age divided into bins of 10)
+5. Education Number (number of years spent in education)
 
 We split the dataset into 80% for train and 20% for test. The training data consists of X_train and y_train, and the test data consists of X_test and y_test.
 
@@ -692,7 +766,7 @@ The classification report for each classifier are printed as the end of each cod
 # SVC Classifier
 
 # Get X and y
-X = pd.get_dummies(data[['education','race', 'occupation', 'age_category']])
+X = pd.get_dummies(data[['education', 'occupation', 'age_category', 'education-num']])
 y = data['income']
 
 # Split data into training and testing sets
@@ -713,12 +787,12 @@ print(report)
 
                   precision    recall  f1-score   support
     
-           <=50K       0.82      0.94      0.87      4503
-            >50K       0.67      0.38      0.48      1530
+           <=50K       0.82      0.93      0.87      4503
+            >50K       0.65      0.39      0.49      1530
     
-        accuracy                           0.80      6033
-       macro avg       0.75      0.66      0.68      6033
-    weighted avg       0.78      0.80      0.77      6033
+        accuracy                           0.79      6033
+       macro avg       0.73      0.66      0.68      6033
+    weighted avg       0.78      0.79      0.77      6033
     
 
 
@@ -741,11 +815,11 @@ print(report)
                   precision    recall  f1-score   support
     
            <=50K       0.82      0.93      0.87      4503
-            >50K       0.66      0.40      0.50      1530
+            >50K       0.66      0.39      0.49      1530
     
-        accuracy                           0.80      6033
-       macro avg       0.74      0.67      0.69      6033
-    weighted avg       0.78      0.80      0.78      6033
+        accuracy                           0.79      6033
+       macro avg       0.74      0.66      0.68      6033
+    weighted avg       0.78      0.79      0.78      6033
     
 
 
@@ -772,11 +846,11 @@ print(report)
 
                   precision    recall  f1-score   support
     
-           <=50K       0.82      0.92      0.87      4503
-            >50K       0.64      0.41      0.50      1530
+           <=50K       0.82      0.93      0.87      4503
+            >50K       0.65      0.41      0.50      1530
     
         accuracy                           0.79      6033
-       macro avg       0.73      0.67      0.69      6033
+       macro avg       0.74      0.67      0.69      6033
     weighted avg       0.78      0.79      0.78      6033
     
 
@@ -805,11 +879,11 @@ print(report)
 
                   precision    recall  f1-score   support
     
-           <=50K       0.82      0.91      0.87      4503
-            >50K       0.63      0.43      0.51      1530
+           <=50K       0.82      0.92      0.87      4503
+            >50K       0.65      0.41      0.50      1530
     
         accuracy                           0.79      6033
-       macro avg       0.73      0.67      0.69      6033
+       macro avg       0.73      0.67      0.68      6033
     weighted avg       0.78      0.79      0.78      6033
     
 
@@ -839,12 +913,12 @@ print(report)
 
                   precision    recall  f1-score   support
     
-           <=50K       0.81      0.94      0.87      4503
-            >50K       0.68      0.36      0.47      1530
+           <=50K       0.83      0.92      0.87      4503
+            >50K       0.64      0.43      0.51      1530
     
         accuracy                           0.79      6033
-       macro avg       0.74      0.65      0.67      6033
-    weighted avg       0.78      0.79      0.77      6033
+       macro avg       0.74      0.67      0.69      6033
+    weighted avg       0.78      0.79      0.78      6033
     
 
 
