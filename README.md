@@ -547,7 +547,7 @@ plt.ylabel('Count')
 
 ## Counts for data columns
 
-To find the counts for the data columns 'income','education','race', and 'occupation' we use the following code.
+To find the counts for the data columns 'income', 'education', 'race', 'occupation' and'education-num' we use the following code.
 
 
 ```python
